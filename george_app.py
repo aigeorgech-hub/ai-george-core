@@ -28,11 +28,16 @@ def ask_george(prompt):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     headers = {'Content-Type': 'application/json'}
     
-    # George személyisége beleépítve a kérésbe
     data = {
         "contents": [{
             "parts": [{"text": f"Te vagy AI George, egy 140-es IQ-val rendelkező svájci AI. Válaszolj sármosan és precízen erre: {prompt}"}]
-        }]
+        }],
+        "safetySettings": [
+            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
+        ]
     }
     
     response = requests.post(url, headers=headers, data=json.dumps(data))
