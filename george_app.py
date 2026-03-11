@@ -14,6 +14,14 @@ st.markdown("""
 st.title("AI George")
 st.caption("The Entity | aigeorge.ch")
 
+# --- EZ A HIÁNYZÓ RÉSZ ---
+if "GOOGLE_API_KEY" in st.secrets:
+    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+else:
+    st.error("Missing API Key in Secrets!")
+    st.stop()
+# -------------------------
+
 # 2. API Kulcs betöltése a Secrets-ből
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
