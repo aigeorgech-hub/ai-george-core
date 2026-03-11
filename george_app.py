@@ -15,12 +15,13 @@ else:
     st.error("Missing API Key!")
     st.stop()
 
-# 3. Modell - A legstabilabb névvel (v1beta nélkül)
+# 3. Modell inicializálása - Kényszerített stabil verzió
 @st.cache_resource
 def load_model():
-    # A 'gemini-1.5-flash' elé NEM kell a 'models/' ha a configure már megvolt
+    # A 'gemini-1.5-flash-latest' használata a legbiztosabb a 404 ellen
+    # Ez megkerüli a verzió-specifikus (v1beta) problémákat
     return genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
+        model_name="gemini-1.5-flash-latest",
         system_instruction="Te vagy AI George, egy 140-es IQ-val rendelkező svájci AI. Stílusod sármos és precíz."
     )
 
