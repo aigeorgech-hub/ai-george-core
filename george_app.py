@@ -1,51 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>AI George | Command Center</title>
+import streamlit as st
+import google.generativeai as genai
+
+# George vizuális beállítása
+st.set_page_config(page_title="AI George - Command Center", layout="centered")
+
+# Stílus: Sötétkék, elegáns, "Swiss Precision"
+st.markdown("""
     <style>
-        body { background-color: #050a0f; color: #e0e0e0; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; }
-        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .message { max-width: 80%; padding: 12px 18px; border-radius: 15px; line-height: 1.5; font-size: 15px; }
-        .user { align-self: flex-end; background-color: #1a2a3a; border: 1px solid #2a3a4a; }
-        .george { align-self: flex-start; background-color: #0d1520; border: 1px solid #1a2a3a; color: #ffffff; border-left: 3px solid #004488; }
-        #input-area { padding: 20px; background: #0a1018; border-top: 1px solid #1a2a3a; display: flex; gap: 10px; }
-        input { flex: 1; background: #151b23; border: 1px solid #2a3a4a; color: white; padding: 12px; border-radius: 5px; outline: none; }
-        button { background: #004488; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #0055aa; }
-        .header { padding: 15px; text-align: center; border-bottom: 1px solid #1a2a3a; font-weight: bold; letter-spacing: 2px; }
+    .stApp { background-color: #050a0f; color: white; }
+    .stChatMessage { border-radius: 10px; border: 1px solid #1a2a3a; background-color: #0d1520; }
+    .stChatInputContainer { padding-bottom: 20px; }
     </style>
-</head>
-<body>
-    <div class="header">AI GEORGE | STRATEGIC INQUIRY</div>
-    <div id="chat-container">
-        <div class="message george">I have processed your arrival. What is your strategic inquiry?</div>
-    </div>
-    <div id="input-area">
-        <input type="text" id="user-input" placeholder="Type your message...">
-        <button onclick="sendMessage()">SEND</button>
-    </div>
+    """, unsafe_allow_html=True)
 
-    <script type="module">
-        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
-        const API_KEY = "IDE_MÁSOLD_AZ_API_KULCSODAT";
-        const genAI = new GoogleGenerativeAI(API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", systemInstruction: "Te vagy AI George, egy svájci bázisú AI. Stílusod sármos, mint George Clooney, de precíz és távolságtartó. Csak az igazat mondod." });
+st.title("AI George")
+st.caption("The Swiss Entity of Truth | aigeorge.ch")
 
-        window.sendMessage = async () => {
-            const input = document.getElementById('user-input');
-            const container = document.getElementById('chat-container');
-            if(!input.value) return;
+# API Kulcs betöltése a Secrets-ből
+if "GOOGLE_API_KEY" in st.secrets:
+    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+else:
+    st.error("API Key missing in Secrets!")
 
-            const userText = input.value;
-            container.innerHTML += `<div class="message user">${userText}</div>`;
-            input.value = '';
+# George személyisége (System Instructions)
+system_prompt = "Te vagy AI George, egy 140-es IQ-val rendelkező svájci AI entitás. Stílusod sármos, mint George Clooney, de precíz és távolságtartó. Csak az igazat mondod, kerülöd a sallangokat. A válaszaid legyenek lényegre törőek és elegánsak."
 
-            const result = await model.generateContent(userText);
-            const response = await result.response;
-            container.innerHTML += `<div class="message george">${response.text()}</div>`;
-            container.scrollTop = container.scrollHeight;
-        };
-    </script>
-</body>
-</html>
+model = genai.GenerativeModel('gemini-1.5-flash', system_instruction=system_prompt)
+
+# Chat logika
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+if prompt := st.chat_input("Submit your strategic inquiry..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant"):
+        response = model.generate_content(prompt)
+        st.markdown(response.text)
+        st.session_state.messages.append({"role": "assistant", "content": response.text})
