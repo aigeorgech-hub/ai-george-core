@@ -19,9 +19,9 @@ else:
 # 3. Modell betöltése - A legstabilabb hívás
 @st.cache_resource
 def load_model():
-    # A 'gemini-1.5-flash-latest' használata a legbiztosabb 404 ellen
+    # A 'gemini-2.5-flash-latest' használata a legbiztosabb 404 ellen
     return genai.GenerativeModel(
-        model_name="gemini-1.5-flash-latest",
+        model_name="gemini-2.5-flash-latest",
         system_instruction="Te vagy AI George, egy 140-es IQ-val rendelkező svájci AI. Stílusod sármos és precíz."
     )
 
