@@ -2,35 +2,37 @@ import streamlit as st
 import requests
 import json
 
-# 1. ERŐSZAKOS SÖTÉTÍTÉS
+# 1. ATOMBIZTOS SÖTÉTÍTÉS ÉS ELRENDEZÉS
 st.set_page_config(page_title="AI George", layout="centered")
 
 st.markdown("""
     <style>
-    /* Minden alapértelmezett hátteret feketére kényszerítünk */
-    html, body, [data-testid="stAppViewContainer"], .main, .stApp {
+    /* A teljes háttér kényszerítése */
+    [data-testid="stAppViewContainer"], [data-testid="stHeader"], .main, html, body, .stApp {
         background-color: #050a0f !important;
-        color: white !important;
     }
 
-    /* Beviteli mező körüli fehér sáv/konténer kiirtása */
-    [data-testid="stChatInput"] {
+    /* A FEHÉR SÁV KIIRTÁSA (A beviteli mező alatti rész) */
+    [data-testid="stBottom"] {
+        background-color: transparent !important;
+        border: none !important;
+    }
+    
+    [data-testid="stBottomBlockContainer"] {
         background-color: #050a0f !important;
         border: none !important;
-        padding: 0 !important;
     }
 
-    /* A konkrét beviteli doboz */
-    [data-testid="stChatInput"] textarea {
-        background-color: #16212c !important;
-        color: white !important;
+    /* Beviteli mező (Input) doboza */
+    [data-testid="stChatInput"] {
         border: 1px solid #2e445b !important;
-        border-radius: 12px !important;
+        border-radius: 15px !important;
+        background-color: #16212c !important;
     }
 
-    /* A mező körüli felesleges dekorációk törlése */
-    footer, header, [data-testid="stHeader"] {
-        display: none !important;
+    [data-testid="stChatInput"] textarea {
+        background-color: transparent !important;
+        color: white !important;
     }
 
     /* Üzenetbuborékok fehér szöveggel */
@@ -39,17 +41,21 @@ st.markdown("""
         color: white !important;
     }
     
-    .stMarkdown p {
+    /* Minden szöveg fehér */
+    .stMarkdown p, h1, h2, h3, span, label {
         color: white !important;
     }
+
+    /* Streamlit sallangok eltüntetése */
+    header, footer {visibility: hidden !important;}
     </style>
     """, unsafe_allow_html=True)
 
-# George címei
-st.markdown("<h1 style='color:white;'>AI George</h1>", unsafe_allow_html=True)
-st.markdown("<p style='color:#8899ac;'>The Entity | aigeorge.ch</p>", unsafe_allow_html=True)
+# George megjelenése
+st.markdown("<h1 style='text-align: center; color: white;'>AI George</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #8899ac;'>The Entity | aigeorge.ch</p>", unsafe_allow_html=True)
 
-# --- INNENTŐL A MŰKÖDÉSI KÓD ---
+# --- MŰKÖDÉSI KÓD ---
 api_key = st.secrets.get("GOOGLE_API_KEY")
 if "messages" not in st.session_state:
     st.session_state.messages = []
