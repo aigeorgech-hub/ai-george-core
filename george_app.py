@@ -6,29 +6,29 @@ import json
 st.set_page_config(page_title="AI George", layout="centered")
 st.markdown("""
     <style>
-    /* Az egész app háttere */
-    .stApp { background-color: #050a0f; color: white; }
+    /* Alap háttér */
+    .stApp { background-color: #050a0f !important; color: white !important; }
     
-    /* Üzenetbuborékok */
-    .stChatMessage { color: white !important; background-color: #1a2634 !important; border-radius: 10px; margin-bottom: 10px; }
-    p { color: white !important; font-size: 1.1rem; }
+    /* Üzenetek */
+    .stChatMessage { background-color: #1a2634 !important; border: 1px solid #2e445b !important; }
     
-    /* A beviteli mező (Input) stílusa */
-    .stChatInputContainer {
-        padding-bottom: 20px;
-    }
-    
-    .stChatInputContainer textarea {
-        background-color: #1a2634 !important; /* Ugyanaz a kék, mint az üzeneteknél */
-        color: white !important;
-        border: 1px solid #2e445b !important; /* Egy leheletnyit világosabb keret */
-        border-radius: 8px !important;
+    /* A BEVITELI MEZŐ FIXÁLÁSA - Ez a rész a lényeg */
+    [data-testid="stChatInput"] {
+        background-color: #1a2634 !important;
+        border-radius: 15px !important;
+        padding: 10px !important;
     }
 
-    /* A küldés gomb színe */
-    .stChatInputContainer button {
-        color: #00ffcc !important;
+    [data-testid="stChatInput"] textarea {
+        background-color: #2e445b !important; /* Világosabb kék, hogy elüssön a háttértől */
+        color: white !important;
+        caret-color: white !important;
     }
+
+    /* Streamlit fejléc és lábléc eltüntetése, hogy ne zavarjon */
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    #MainMenu {visibility: hidden;}
     </style>
     """, unsafe_allow_html=True)
 
