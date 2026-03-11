@@ -39,23 +39,18 @@ def load_model():
 
 model = load_model()
 
-# 5. Interakció
+# 4. Chat előzmények inicializálása - EZ HIÁNYZOTT!
+if "messages" not in st.session_state:
+    st.session_state["messages"] = []
+
+# Üzenetek megjelenítése (ha már vannak)
+for message in st.session_state["messages"]:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# 5. Interakció (ahol a hiba történt)
 if prompt := st.chat_input("Strategic inquiry..."):
+    # Itt már nem lesz hiba, mert fentebb létrehoztuk a 'messages' listát
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
-
-    try:
-        with st.chat_message("assistant"):
-            # A generálás kérése
-            response = model.generate_content(prompt)
-            
-            # George válaszának megjelenítése
-            if response and response.text:
-                st.markdown(response.text)
-                st.session_state.messages.append({"role": "assistant", "content": response.text})
-            else:
-                st.error("George nem tudott választ generálni. Ellenőrizd a biztonsági szűrőket.")
-    except Exception as e:
-        st.error(f"Rendszerhiba: {e}")
-        st.info("Próbáljuk meg a modellt direkt elérni...")
