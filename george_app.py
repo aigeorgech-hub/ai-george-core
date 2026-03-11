@@ -6,10 +6,29 @@ import json
 st.set_page_config(page_title="AI George", layout="centered")
 st.markdown("""
     <style>
+    /* Az egész app háttere */
     .stApp { background-color: #050a0f; color: white; }
+    
+    /* Üzenetbuborékok */
     .stChatMessage { color: white !important; background-color: #1a2634 !important; border-radius: 10px; margin-bottom: 10px; }
     p { color: white !important; font-size: 1.1rem; }
-    .stChatInputContainer { background-color: #050a0f !important; }
+    
+    /* A beviteli mező (Input) stílusa */
+    .stChatInputContainer {
+        padding-bottom: 20px;
+    }
+    
+    .stChatInputContainer textarea {
+        background-color: #1a2634 !important; /* Ugyanaz a kék, mint az üzeneteknél */
+        color: white !important;
+        border: 1px solid #2e445b !important; /* Egy leheletnyit világosabb keret */
+        border-radius: 8px !important;
+    }
+
+    /* A küldés gomb színe */
+    .stChatInputContainer button {
+        color: #00ffcc !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
