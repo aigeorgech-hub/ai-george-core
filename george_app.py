@@ -29,10 +29,10 @@ else:
     st.error("Hiba: Az API kulcs hiányzik a Secrets-ből!")
     st.stop()
 
-# 3. Modell inicializálása - Kényszerített stabil verzió
+# 3. Modell inicializálása - A legstabilabb útvonal
 @st.cache_resource
 def load_model():
-    # George stabil elérése
+    # Itt kényszerítjük a stabil verziót
     return genai.GenerativeModel(
         model_name="gemini-1.5-flash",
         system_instruction="Te vagy AI George, egy 140-es IQ-val rendelkező svájci AI. Stílusod sármos és precíz."
@@ -41,11 +41,8 @@ def load_model():
 try:
     model = load_model()
 except Exception as e:
-    st.error(f"Modell betöltési hiba: {e}")
-    # B-terv: ha a sima flash nem megy, próbáljuk a legfrissebbet
-    model = genai.GenerativeModel(model_name="gemini-1.5-flash-latest")
-
-# 4. Chat előzmények
+    # Ha a sima név nem megy, megpróbáljuk a 'models/' előtaggal is
+    model = genai.GenerativeModel(model_name="models/gemini-1.5-flash")
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
