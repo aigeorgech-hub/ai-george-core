@@ -4,7 +4,13 @@ import json
 
 # 1. Külsőségek
 st.set_page_config(page_title="AI George", layout="centered")
-st.markdown("<style>.stApp { background-color: #050a0f; color: white; }</style>", unsafe_allow_html=True)
+st.markdown("""
+    <style>
+    .stApp { background-color: #050a0f; color: white; }
+    .stChatMessage { color: white !important; background-color: #1a2634 !important; border-radius: 10px; }
+    p { color: white !important; font-size: 1.1rem; }
+    </style>
+    """, unsafe_allow_html=True)
 
 st.title("AI George")
 st.caption("The Entity | aigeorge.ch")
