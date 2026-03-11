@@ -30,7 +30,7 @@ model = genai.GenerativeModel('gemini-1.5-flash', system_instruction=system_prom
 # Chat logika
 if "messages" not in st.session_state:
     st.session_state.messages = []
-
+model = genai.GenerativeModel(model_name="models/gemini-1.5-flash", system_instruction=system_prompt)
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
