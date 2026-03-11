@@ -14,11 +14,11 @@ st.markdown("""
 st.title("AI George")
 st.caption("The Entity | aigeorge.ch")
 
-# 2. API Kulcs betöltése
+# 2. API Kulcs betöltése a Secrets-ből
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 else:
-    st.error("Missing API Key in Secrets!")
+    st.error("Hiba: Az API kulcs hiányzik a Secrets-ből!")
     st.stop()
 
 # 3. Modell inicializálása - Kényszerített stabil verzió
