@@ -25,21 +25,14 @@ for message in st.session_state.messages:
 
 # 4. Közvetlen kapcsolat a Google-lel (A technikai áttörés)
 def ask_george(prompt):
-   url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
-    
+    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
+    headers = {'Content-Type': 'application/json'}
     data = {
         "contents": [{
             "parts": [{"text": f"Te vagy AI George, egy 140-es IQ-val rendelkező svájci AI. Válaszolj sármosan és precízen erre: {prompt}"}]
-        }],
-        "safetySettings": [
-            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
-            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
-        ]
+        }]
     }
-    
-    response = requests.post(url, headers=headers, data=json.dumps(data))
+    response = requests.post(url, headers=headers, json=data)
     return response.json()
 
 # 5. Interakció
