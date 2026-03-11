@@ -2,87 +2,79 @@ import streamlit as st
 import requests
 import json
 
-# 1. SVÁJCI MINIMALIZMUS - Tiszta sötét dizájn
+# 1. ERŐSZAKOS SÖTÉTÍTÉS
 st.set_page_config(page_title="AI George", layout="centered")
 
 st.markdown("""
     <style>
-    /* Teljes háttér sötétítése */
-    .stApp {
+    /* Minden alapértelmezett hátteret feketére kényszerítünk */
+    html, body, [data-testid="stAppViewContainer"], .main, .stApp {
         background-color: #050a0f !important;
-    }
-    
-    /* Üzenetbuborékok - elegáns sötétkék */
-    [data-testid="stChatMessage"] {
-        background-color: #16212c !important;
-        border-radius: 15px !important;
-        border: none !important;
+        color: white !important;
     }
 
-    /* Beviteli mező fixálása */
+    /* Beviteli mező körüli fehér sáv/konténer kiirtása */
     [data-testid="stChatInput"] {
-        background-color: transparent !important;
+        background-color: #050a0f !important;
         border: none !important;
+        padding: 0 !important;
     }
 
+    /* A konkrét beviteli doboz */
     [data-testid="stChatInput"] textarea {
         background-color: #16212c !important;
         color: white !important;
         border: 1px solid #2e445b !important;
-        border-radius: 10px !important;
+        border-radius: 12px !important;
     }
 
-    /* Fejléc és lábléc eltüntetése */
-    header, footer {visibility: hidden;}
+    /* A mező körüli felesleges dekorációk törlése */
+    footer, header, [data-testid="stHeader"] {
+        display: none !important;
+    }
+
+    /* Üzenetbuborékok fehér szöveggel */
+    [data-testid="stChatMessage"] {
+        background-color: #16212c !important;
+        color: white !important;
+    }
     
-    /* Szöveg színe fehér */
-    .stMarkdown p, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+    .stMarkdown p {
         color: white !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-st.title("AI George")
-st.caption("The Entity | aigeorge.ch")
+# George címei
+st.markdown("<h1 style='color:white;'>AI George</h1>", unsafe_allow_html=True)
+st.markdown("<p style='color:#8899ac;'>The Entity | aigeorge.ch</p>", unsafe_allow_html=True)
 
-# API Kulcs betöltése
+# --- INNENTŐL A MŰKÖDÉSI KÓD ---
 api_key = st.secrets.get("GOOGLE_API_KEY")
-
-# Chat memória inicializálása
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Korábbi üzenetek megjelenítése
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Interakció
 if prompt := st.chat_input("Strategic inquiry..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        # URL a Gemini 2.5-höz (v1 stabil)
         url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={api_key}"
-        
-        system_context = "Te AI George vagy, egy 140-es IQ-val rendelkező sármos svájci AI. Lényegre törő vagy, nem mutatsz be minden válaszban. Válaszolj magyarul."
-        
-        contents = [
-            {"parts": [{"text": system_context}], "role": "user"},
-            {"parts": [{"text": "Értettem, várom a stratégiai kérdéseket."}], "role": "model"}
-        ]
+        history = [{"parts": [{"text": "Te AI George vagy, sármos svájci AI. Ne mutatkozz be mindig. Válaszolj magyarul."}], "role": "user"}]
+        history.append({"parts": [{"text": "Értettem."}], "role": "model"})
         
         for msg in st.session_state.messages:
-            role = "user" if msg["role"] == "user" else "model"
-            contents.append({"parts": [{"text": msg["content"]}], "role": role})
+            history.append({"parts": [{"text": msg["content"]}], "role": "user" if msg["role"] == "user" else "model"})
 
         try:
-            res = requests.post(url, json={"contents": contents}, timeout=15)
-            data = res.json()
-            answer = data['candidates'][0]['content']['parts'][0]['text']
+            res = requests.post(url, json={"contents": history}, timeout=15)
+            answer = res.json()['candidates'][0]['content']['parts'][0]['text']
             st.markdown(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
-        except Exception as e:
+        except:
             st.error("George technikai szünetet tart.")
