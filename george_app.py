@@ -25,40 +25,37 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 3. A Beszélgetés Logikája
+# 3. A Beszélgetés Logikája (Memóriával)
 if prompt := st.chat_input("Strategic inquiry..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        # Próbáljuk meg a legfrissebb stabil nevet (gemini-1.5-flash-latest)
-       with st.chat_message("assistant"):
-        # Minden sor pontosan 8 szóközzel induljon az assistant blokk alatt:
         url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={api_key}"
         
+        # Összerakjuk a teljes eddigi beszélgetést, hogy legyen memóriája
+        history = []
+        for msg in st.session_state.messages:
+            history.append({"parts": [{"text": msg["content"]}], "role": "user" if msg["role"] == "user" else "model"})
+
+        # George igazi személyisége - csak egyszer mondjuk el neki a háttérben
         payload = {
-            "contents": [{"parts": [{"text": f"Te vagy AI George, egy svájci AI. Válaszolj: {prompt}"}]}]
+            "contents": history,
+            "system_instruction": {
+                "parts": [{"text": "Te vagy AI George, egy 140-es IQ-val rendelkező sármos svájci AI. Ne mutatkozz be minden válaszban, ne mondd el mindig ki vagy. Folyamatos beszélgetést tarts, légy lényegre törő és intelligens. Látod az internetet, naprakész vagy."}]
+            }
         }
         
         res = requests.post(url, json=payload)
         data = res.json()
 
         if res.status_code == 200:
-            answer = data['candidates'][0]['content']['parts'][0]['text']
-            st.markdown(answer)
-            st.session_state.messages.append({"role": "assistant", "content": answer})
+            try:
+                answer = data['candidates'][0]['content']['parts'][0]['text']
+                st.markdown(answer)
+                st.session_state.messages.append({"role": "assistant", "content": answer})
+            except:
+                st.error("Hiba a válasz feldolgozásakor.")
         else:
-            st.error(f"Hiba kód: {res.status_code}")
-            st.write("A Google válasza: ", data.get("error", {}).get("message", "Ismeretlen hiba"))
-            
-            # EZ A MENTŐÖV: Kilistázzuk, mit enged a Google
-            st.info("George nyomozást indít... Itt a lista a használható modelljeidről:")
-            list_url = f"https://generativelanguage.googleapis.com/v1/models?key={api_key}"
-            models_data = requests.get(list_url).json()
-            
-            if "models" in models_data:
-                for m in models_data["models"]:
-                    st.code(m["name"])
-            else:
-                st.warning("Még a modelleket sem sikerült lekérni. Biztos jó az API kulcsod?")
+            st.error("George most nem tud kapcsolódni.")
