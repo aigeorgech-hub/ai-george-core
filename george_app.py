@@ -25,8 +25,7 @@ for message in st.session_state.messages:
 
 # 4. Közvetlen kapcsolat a Google-lel (A technikai áttörés)
 def ask_george(prompt):
-    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
-    headers = {'Content-Type': 'application/json'}
+   url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
     
     data = {
         "contents": [{
