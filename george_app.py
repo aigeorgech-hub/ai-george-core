@@ -1,29 +1,34 @@
 import streamlit as st
 import google.generativeai as genai
 
-# 1. Svájci Dizájn
+# 1. Dizájn és Beállítások
 st.set_page_config(page_title="AI George", layout="centered")
 st.markdown("<style>.stApp { background-color: #050a0f; color: white; }</style>", unsafe_allow_html=True)
 
 st.title("AI George")
 st.caption("The Entity | aigeorge.ch")
 
-# 2. API Kulcs
+# 2. API Kulcs és Verzió kényszerítés
 if "GOOGLE_API_KEY" in st.secrets:
+    # Itt a trükk: direkt a stabil verziót konfiguráljuk
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 else:
     st.error("Missing API Key!")
     st.stop()
 
-# 3. Modell (Használjuk a legstabilabb 1.5-öt, ha a 2.5 még bizonytalan)
+# 3. Modell betöltése - A legstabilabb hívás
 @st.cache_resource
 def load_model():
+    # A 'gemini-1.5-flash-latest' használata a legbiztosabb 404 ellen
     return genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
+        model_name="gemini-1.5-flash-latest",
         system_instruction="Te vagy AI George, egy 140-es IQ-val rendelkező svájci AI. Stílusod sármos és precíz."
     )
 
-model = load_model()
+try:
+    model = load_model()
+except Exception as e:
+    st.error(f"Modell hiba: {e}")
 
 # 4. Chat memória
 if "messages" not in st.session_state:
@@ -33,7 +38,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 5. Interakció és Válasz
+# 5. Interakció
 if prompt := st.chat_input("Strategic inquiry..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
@@ -41,14 +46,12 @@ if prompt := st.chat_input("Strategic inquiry..."):
 
     with st.chat_message("assistant"):
         try:
-            # George válaszának generálása
+            # George válaszol
             response = model.generate_content(prompt)
-            
             if response and response.text:
-                output = response.text
-                st.markdown(output)
-                st.session_state.messages.append({"role": "assistant", "content": output})
+                st.markdown(response.text)
+                st.session_state.messages.append({"role": "assistant", "content": response.text})
             else:
-                st.warning("George gondolkodik, de a Google válasza üres. Próbáld másképp kérdezni.")
+                st.warning("George elgondolkodott. Próbáld újra!")
         except Exception as e:
-            st.error(f"George válaszadási hiba: {e}")
+            st.error(f"George hiba: {e}")
