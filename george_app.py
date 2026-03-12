@@ -3,6 +3,9 @@ import requests
 import json
 
 # 1. ATOMBIZTOS SÖTÉTÍTÉS ÉS ELRENDEZÉS
+
+# Ez a sor kényszeríti a sötét módot a böngészőnek
+st.query_params["theme"] = "dark"
 st.set_page_config(page_title="AI George", layout="centered")
 
 st.markdown("""
