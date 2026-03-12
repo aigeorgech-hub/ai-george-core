@@ -10,33 +10,38 @@ st.set_page_config(page_title="AI George", layout="centered")
 
 st.markdown("""
     <style>
-    /* Teljes sötét háttér kényszerítése */
+    /* 1. Alap háttér sötét marad */
     [data-testid="stAppViewContainer"], [data-testid="stAppViewBlockContainer"], 
     [data-testid="stMainBlockContainer"], .main, html, body, .stApp {
         background-color: #050a0f !important;
     }
 
-    /* A BEVITELI MEZŐ: FEHÉR HÁTTÉR, FEKETE SZÖVEG */
+    /* 2. A BEVITELI MEZŐ KONTÉNERE - Itt tüntetjük el a kék rést */
     [data-testid="stChatInput"] {
-        background-color: #ffffff !important; /* Fehér papír */
+        background-color: #ffffff !important; /* A külső keret is fehér legyen */
         border-radius: 12px !important;
-        border: 2px solid #2e445b !important;
-        padding: 5px !important;
+        padding: 0px !important; /* Kék hézag kiiktatva */
+        border: none !important;
     }
 
+    /* 3. A tényleges írósáv */
     [data-testid="stChatInput"] textarea {
-        background-color: #ffffff !important; /* Belső fehérség */
-        color: #050a0f !important; /* Sötét, fekete tinta */
-        caret-color: #050a0f !important; /* A villogó kurzor is sötét */
-        font-weight: 500 !important;
-    }
-
-    /* A küldés gomb ikonja maradjon sötét a fehér háttéren */
-    [data-testid="stChatInput"] button {
+        background-color: #ffffff !important;
         color: #050a0f !important;
+        padding: 15px !important;
+        border-radius: 12px !important;
     }
 
-    /* Üzenetek és sallangok */
+    /* 4. A beviteli mező alatti "aljzat" is legyen sötét, ne világítson */
+    [data-testid="stBottom"] {
+        background-color: #050a0f !important;
+    }
+    
+    [data-testid="stBottomBlockContainer"] {
+        background-color: #050a0f !important;
+    }
+
+    /* 5. Egyéb színek */
     [data-testid="stChatMessage"] {
         background-color: #16212c !important;
         color: white !important;
