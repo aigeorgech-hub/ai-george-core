@@ -7,23 +7,22 @@ st.set_page_config(page_title="AI George", layout="centered")
 
 st.markdown("""
     <style>
-    /* A teljes háttér kényszerítése */
-    [data-testid="stAppViewContainer"], [data-testid="stHeader"], .main, html, body, .stApp {
+    /* 1. A két szélső sáv és a teljes háttér kényszerítése */
+    [data-testid="stAppViewContainer"], 
+    [data-testid="stAppViewBlockContainer"],
+    [data-testid="stMainBlockContainer"],
+    .main, html, body, .stApp {
         background-color: #050a0f !important;
+        width: 100% !important;
     }
 
-    /* A FEHÉR SÁV KIIRTÁSA (A beviteli mező alatti rész) */
-    [data-testid="stBottom"] {
-        background-color: transparent !important;
-        border: none !important;
-    }
-    
-    [data-testid="stBottomBlockContainer"] {
+    /* 2. A beviteli mező alatti sáv (ami még fehér lehetett a széleken) */
+    [data-testid="stBottom"], [data-testid="stBottomBlockContainer"] {
         background-color: #050a0f !important;
         border: none !important;
     }
 
-    /* Beviteli mező (Input) doboza */
+    /* 3. A beviteli mező (Input) stílusa */
     [data-testid="stChatInput"] {
         border: 1px solid #2e445b !important;
         border-radius: 15px !important;
@@ -35,18 +34,17 @@ st.markdown("""
         color: white !important;
     }
 
-    /* Üzenetbuborékok fehér szöveggel */
+    /* 4. Szövegek és buborékok */
     [data-testid="stChatMessage"] {
         background-color: #16212c !important;
         color: white !important;
     }
     
-    /* Minden szöveg fehér */
     .stMarkdown p, h1, h2, h3, span, label {
         color: white !important;
     }
 
-    /* Streamlit sallangok eltüntetése */
+    /* 5. Sallangok törlése */
     header, footer {visibility: hidden !important;}
     </style>
     """, unsafe_allow_html=True)
