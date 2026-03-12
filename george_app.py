@@ -10,38 +10,37 @@ st.set_page_config(page_title="AI George", layout="centered")
 
 st.markdown("""
     <style>
-    /* 1. Alap háttér sötét marad */
+    /* 1. Alap háttér */
     [data-testid="stAppViewContainer"], [data-testid="stAppViewBlockContainer"], 
     [data-testid="stMainBlockContainer"], .main, html, body, .stApp {
         background-color: #050a0f !important;
     }
 
-    /* 2. A BEVITELI MEZŐ KONTÉNERE - Itt tüntetjük el a kék rést */
+    /* 2. A TELJES BEVITELI SÁV - Fehérre kényszerítve, kék margók nélkül */
     [data-testid="stChatInput"] {
-        background-color: #ffffff !important; /* A külső keret is fehér legyen */
+        background-color: #ffffff !important; 
         border-radius: 12px !important;
-        padding: 0px !important; /* Kék hézag kiiktatva */
+        padding: 0px !important; 
+        border: none !important;
+        box-shadow: none !important; /* Itt tűnik el a kék "ragyogás" */
+    }
+
+    /* A belső form és textarea teljes eltüntetése a kéknek */
+    [data-testid="stChatInput"] form, [data-testid="stChatInput"] textarea {
+        background-color: #ffffff !important;
+        color: #050a0f !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important; /* Ez öli meg a kattintáskori kék keretet */
+    }
+
+    /* 3. Az alsó blokk sötétítése, hogy csak a fehér mező látsszon */
+    [data-testid="stBottom"], [data-testid="stBottomBlockContainer"] {
+        background-color: #050a0f !important;
         border: none !important;
     }
 
-    /* 3. A tényleges írósáv */
-    [data-testid="stChatInput"] textarea {
-        background-color: #ffffff !important;
-        color: #050a0f !important;
-        padding: 15px !important;
-        border-radius: 12px !important;
-    }
-
-    /* 4. A beviteli mező alatti "aljzat" is legyen sötét, ne világítson */
-    [data-testid="stBottom"] {
-        background-color: #050a0f !important;
-    }
-    
-    [data-testid="stBottomBlockContainer"] {
-        background-color: #050a0f !important;
-    }
-
-    /* 5. Egyéb színek */
+    /* 4. Egyéb elemek */
     [data-testid="stChatMessage"] {
         background-color: #16212c !important;
         color: white !important;
